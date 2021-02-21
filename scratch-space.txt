@@ -1,0 +1,17 @@
+Events and how the socket should handle them
+
+CLIENT CONNECT
+- check to see if this client has already registered (SHOULD)
+- if so, reject this client (SHOULD)
+- otherwise, accept this client (NEED)
+
+CLIENT SEND MESSAGE
+- authenticate client with django server (SHOULD)
+- send message to django (NEED)
+- if django succeeds, check recipient id against
+  connected clients (SHOULD)
+  - if client is connected, send them the new message 
+    (NEED) 
+- if django fails, do not send message and report to 
+  sender that message failed to send
+  (SHOULD)
