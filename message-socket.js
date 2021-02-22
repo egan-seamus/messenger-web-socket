@@ -7,6 +7,10 @@ const ws = require('socket.io')(http, {
         methods : ["GET", "POST"]
     }
 })
+const axios = require('axios').default;
+
+const baseURL = "http://localhost:8000/"
+const sendURL = baseURL.concat("messaging/send/")
 
 let connectedIDs = []
 
@@ -40,6 +44,14 @@ ws.on('connection', (socket) => {
 
     socket.on('message-send', (message) => {
         console.log(message)
+
+        axios.post(sendURL, message, { withCredentials: true })
+        .then((response) => {
+            console.log("success")
+        })
+        .catch((response) => {
+            console.log("failure")
+        })
 
         targets = connectedIDs.filter((c) => {
             // todo determine why strict equality fails here
