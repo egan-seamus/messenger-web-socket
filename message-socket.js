@@ -14,6 +14,12 @@ const sendURL = baseURL.concat("messaging/send/")
 
 let connectedIDs = []
 
+function printConnections() {
+    connectedIDs.forEach(function(connection) {
+        console.log("user ", connection.user_id, " on ", connection.socket_id);
+    })
+}
+
 app.get('/', (req, res) => {
   res.send('<h1>Hello world</h1>');
 });
@@ -32,14 +38,14 @@ ws.on('connection', (socket) => {
             socket_id: socket.id,
             socket : socket
         })
-    console.log("Sessions:", connectedIDs)
+    printConnections();
 
     socket.on('disconnect', () => {
         console.log("disconnect")
         connectedIDs = connectedIDs.filter((c) => {
             return c.socket_id !== socket.id 
         })
-        console.log("Sessions:", connectedIDs)
+        printConnections()
     })
 
     socket.on('message-send', (message) => {
@@ -57,7 +63,7 @@ ws.on('connection', (socket) => {
             // todo determine why strict equality fails here
             return (c.user_id == message.recipient_id);
         })
-        console.log(targets)
+        // console.log(targets)
 
         for(let i = 0; i < targets.length; i++) {
             targets[i].socket.emit('message-to-client', message)
